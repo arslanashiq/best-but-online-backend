@@ -36,9 +36,11 @@ const _login = async (body, resp) => {
 
   const last_task_assigned_date = moment(user.last_task_assigned_date);
   const toady_date = moment(new Date());
-  const interval = last_task_assigned_date.diff(toady_date, "days");
+  const interval = toady_date.diff(last_task_assigned_date, "days");
+
   if (interval > 0) {
     user.remaining_tasks = Math.floor(Math.random() * (30 - 20 + 1)) + 20;
+    user.last_task_assigned_date = Date.now();
     user.save();
   }
   user = user.toObject();

@@ -27,6 +27,14 @@ const userSchema = new mongoose.Schema({
     default: 20,
   },
   last_task_assigned_date: { type: Date, default: Date.now }, // Auto-generated timestamp
+  is_active: {
+    type: Boolean,
+    default: true,
+  },
+  bank_info: {
+    type: Object,
+    default: null,
+  },
 });
 
 userSchema.plugin(timestamps);

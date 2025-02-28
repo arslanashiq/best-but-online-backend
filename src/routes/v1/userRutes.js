@@ -5,6 +5,7 @@ const update_balance = require("../../controllers/user/update_balance");
 const update_task_assigned_date = require("../../controllers/user/update_task_assigned_date");
 const update_remaining_task_count = require("../../controllers/user/update_remaining_task_count");
 const detail_user = require("../../controllers/user/detail_user");
+const updated_bank = require("../../controllers/user/update_bank");
 
 const router = express.Router();
 
@@ -33,6 +34,12 @@ create_route({
   route: "/:id/update_balance",
   auth_enable: true,
   put_method: update_balance,
+});
+create_route({
+  router,
+  route: "/:id/update_bank",
+  auth_enable: true,
+  put_method: updated_bank,
 });
 create_route({
   router,

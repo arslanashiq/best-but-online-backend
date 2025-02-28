@@ -137,10 +137,36 @@ const updateBalance = async (params, body) => {
   return resp;
 };
 
+//********************************************{Update Bank}********************************************************/
+const _updateBank = async (params, body, resp) => {
+  let user = await find_user_by_id(params.id || "");
+  if (!user) {
+    resp.error = true;
+    resp.status = 404;
+    resp.message = "User Not Found";
+    return resp;
+  }
+  user.bank_info = body.bank_info;
+  await user.save();
+  resp.data = user.toObject();
+  return resp;
+};
+const updateBank = async (params, body) => {
+  let resp = {
+    error: false,
+    message: "",
+    status: 200,
+    data: {},
+  };
+  resp = await _updateBank(params, body, resp);
+  return resp;
+};
+
 module.exports = {
   addUser,
   detailUser,
   updateRemainingTaskCount,
   updateTaskAsignDate,
   updateBalance,
+  updateBank,
 };
