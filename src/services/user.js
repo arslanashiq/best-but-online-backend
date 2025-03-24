@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 
-
 const {
   find_user_by_phone_number,
   add_user,
@@ -178,10 +177,26 @@ const _withdrawlBalance = async (params, body, resp) => {
     body.withdrawl_passowrd,
     user.withdrawl_passowrd
   );
+
+  console.log(
+    isValidWithdrawlPassword,
+    body.withdrawl_passowrd,
+    user.withdrawl_passowrd
+  );
   if (!isValidWithdrawlPassword) {
     resp.error = true;
     resp.message = "Invalid Withdrawl Password";
+    resp.data = null;
     resp.status = 400;
+
+    return resp;
+  }
+
+  if (body.amount <= 0) {
+    resp.error = true;
+    resp.message = `Withdrawl ammount must be greater than 0`;
+    resp.status = 400;
+    resp.data = null;
 
     return resp;
   }
@@ -189,6 +204,7 @@ const _withdrawlBalance = async (params, body, resp) => {
     resp.error = true;
     resp.message = `Withdrawl ammount cannot be greater than ${user.balance_amount}`;
     resp.status = 400;
+    resp.data = null;
 
     return resp;
   }
