@@ -7,6 +7,7 @@ const update_remaining_task_count = require("../../controllers/user/update_remai
 const withdraw_amount = require("../../controllers/user/withdraw_amount");
 const detail_user = require("../../controllers/user/detail_user");
 const updated_bank = require("../../controllers/user/update_bank");
+const transactions_list = require("../../controllers/transactions/transactions_list");
 
 const router = express.Router();
 
@@ -54,5 +55,6 @@ create_route({
   auth_enable: true,
   get_method: detail_user,
 });
+
 
 module.exports = router;

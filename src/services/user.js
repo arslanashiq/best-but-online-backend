@@ -6,6 +6,7 @@ const {
   find_user_by_id,
   find_user_by_id_with_withdrawl_password,
 } = require("../DAL/user");
+const { add_transaction } = require("../DAL/transaction");
 
 //********************************************{Add User}********************************************************/
 const _addUser = async (body, resp) => {
@@ -178,11 +179,6 @@ const _withdrawlBalance = async (params, body, resp) => {
     user.withdrawl_passowrd
   );
 
-  console.log(
-    isValidWithdrawlPassword,
-    body.withdrawl_passowrd,
-    user.withdrawl_passowrd
-  );
   if (!isValidWithdrawlPassword) {
     resp.error = true;
     resp.message = "Invalid Withdrawl Password";
@@ -194,7 +190,15 @@ const _withdrawlBalance = async (params, body, resp) => {
 
   if (body.amount <= 0) {
     resp.error = true;
-    resp.message = `Withdrawl ammount must be greater than 0`;
+    resp.message = `Withdrawl amount must be greater than 0`;
+    resp.status = 400;
+    resp.data = null;
+
+    return resp;
+  }
+  if (user.balance_amount <= 0) {
+    resp.error = true;
+    resp.message = `Your Balance amount must be greater than 0`;
     resp.status = 400;
     resp.data = null;
 
@@ -208,12 +212,28 @@ const _withdrawlBalance = async (params, body, resp) => {
 
     return resp;
   }
+
+  let transaction = await add_transaction({
+    user_id: user._id,
+    amount: body.amount,
+    bank: user.bank_info,
+    type: "withdraw",
+  });
+  if (!transaction) {
+    resp.error = true;
+    resp.message = `Somthing went wrong please try again`;
+    resp.status = 400;
+    resp.data = null;
+
+    return resp;
+  }
+
   user.balance_amount = user.balance_amount - body.amount;
+
   await user.save();
   user = user.toObject();
   delete user.withdrawl_passowrd;
   resp.data = user;
-
   return resp;
 };
 const withdrawlBalance = async (params, body) => {
