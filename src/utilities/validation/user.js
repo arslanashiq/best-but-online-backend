@@ -9,6 +9,10 @@ const add_user_validation_schema = yup.object().shape({
 const update_user_balance_validation_schema = yup.object().shape({
   balance_amount: yup.string().required(),
 });
+const withdraw_user_balance_validation_schema = yup.object().shape({
+  amount: yup.string().required(),
+  withdrawl_passowrd: yup.string().required(),
+});
 const update_user_bank_validation_schema = yup.object().shape({
   bank_info: yup.object().shape({
     bank_name: yup.string().required(),
@@ -21,4 +25,5 @@ module.exports = {
   add_user_validation_schema,
   update_user_balance_validation_schema,
   update_user_bank_validation_schema,
+  withdraw_user_balance_validation_schema
 };

@@ -13,9 +13,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  withdrawl_passsword: {
+  withdrawl_passowrd: {
     type: String,
     default: "",
+  },
+  greater_task_number: {
+    type: Number,
+    default: -1,
   },
 
   balance_amount: {
@@ -24,7 +28,7 @@ const userSchema = new mongoose.Schema({
   },
   remaining_tasks: {
     type: Number,
-    default: 20,
+    default: 0,
   },
   last_task_assigned_date: { type: Date, default: Date.now }, // Auto-generated timestamp
   is_active: {

@@ -34,18 +34,18 @@ const _login = async (body, resp) => {
     return resp;
   }
 
-  const last_task_assigned_date = moment(user.last_task_assigned_date);
-  const toady_date = moment(new Date());
-  const interval = toady_date.diff(last_task_assigned_date, "days");
+  // const last_task_assigned_date = moment(user.last_task_assigned_date);
+  // const toady_date = moment(new Date());
+  // const interval = toady_date.diff(last_task_assigned_date, "days");
 
-  if (interval > 0) {
-    user.remaining_tasks = Math.floor(Math.random() * (30 - 20 + 1)) + 20;
-    user.last_task_assigned_date = Date.now();
-    user.save();
-  }
+  // if (interval > 0) {
+  //   user.remaining_tasks = Math.floor(Math.random() * (30 - 20 + 1)) + 20;
+  //   user.last_task_assigned_date = Date.now();
+  //   user.save();
+  // }
   user = user.toObject();
   delete user.login_password;
-  delete user.withdrawl_passsword;
+  delete user.withdrawl_passowrd;
 
   const token = create_jwt_token({ data: user });
   await add_to_session(token, user._id);

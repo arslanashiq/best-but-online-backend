@@ -1,7 +1,11 @@
+const bcrypt = require("bcrypt");
+
+
 const {
   find_user_by_phone_number,
   add_user,
   find_user_by_id,
+  find_user_by_id_with_withdrawl_password,
 } = require("../DAL/user");
 
 //********************************************{Add User}********************************************************/
@@ -22,7 +26,7 @@ const _addUser = async (body, resp) => {
     return resp;
   }
   user = user.toObject();
-  delete user.withdrawl_passsword;
+  delete user.withdrawl_passowrd;
   delete user.login_password;
   resp.data = user;
   return resp;
@@ -161,6 +165,51 @@ const updateBank = async (params, body) => {
   resp = await _updateBank(params, body, resp);
   return resp;
 };
+//********************************************{Withdrawl Balance}********************************************************/
+const _withdrawlBalance = async (params, body, resp) => {
+  let user = await find_user_by_id_with_withdrawl_password(params.id || "");
+  if (!user) {
+    resp.error = true;
+    resp.status = 404;
+    resp.message = "User Not Found";
+    return resp;
+  }
+  const isValidWithdrawlPassword = await bcrypt.compare(
+    body.withdrawl_passowrd,
+    user.withdrawl_passowrd
+  );
+  if (!isValidWithdrawlPassword) {
+    resp.error = true;
+    resp.message = "Invalid Withdrawl Password";
+    resp.status = 400;
+
+    return resp;
+  }
+  if (body.amount > user.balance_amount) {
+    resp.error = true;
+    resp.message = `Withdrawl ammount cannot be greater than ${user.balance_amount}`;
+    resp.status = 400;
+
+    return resp;
+  }
+  user.balance_amount = user.balance_amount - body.amount;
+  await user.save();
+  user = user.toObject();
+  delete user.withdrawl_passowrd;
+  resp.data = user;
+
+  return resp;
+};
+const withdrawlBalance = async (params, body) => {
+  let resp = {
+    error: false,
+    message: "",
+    status: 200,
+    data: {},
+  };
+  resp = await _withdrawlBalance(params, body, resp);
+  return resp;
+};
 
 module.exports = {
   addUser,
@@ -169,4 +218,5 @@ module.exports = {
   updateTaskAsignDate,
   updateBalance,
   updateBank,
+  withdrawlBalance,
 };
